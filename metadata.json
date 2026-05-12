@@ -1,0 +1,6 @@
+{
+  "name": "Dashboard de Qualidade 32º BPM/I",
+  "description": "Dashboard interativo para acompanhamento de 56 indicadores de qualidade com integração ao Google Sheets.",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}
