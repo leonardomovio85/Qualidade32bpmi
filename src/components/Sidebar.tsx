@@ -80,7 +80,7 @@ export default function Sidebar({ sections, activeSection, onSelectSection, indi
                   <h3 className="text-[10px] font-black text-blue-500 uppercase tracking-[0.3em] mb-4">Composição da Comissão</h3>
                   <div className="grid gap-3">
                     {[
-                      { name: "Ten Cel PM 932502-6 Marlus Guedes", role: "Presidente" },
+                      { name: "Ten Cel PM Marlus Guedes", role: "Presidente" },
                       { name: "Maj PM 980921-0 Ronny Emerson Gomes", role: "Membro" },
                       { name: "Maj PM 990071-3 Marcelo Shigeo Garcia Tsuda", role: "Membro" },
                       { name: "Cap PM 108473-9 André Luis Coelho Piedade", role: "Membro" },
