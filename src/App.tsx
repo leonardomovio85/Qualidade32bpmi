@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { RefreshCcw, Search, Filter, AlertCircle, Info, LayoutGrid, List, Download } from 'lucide-react';
+import { RefreshCcw, Search, Filter, AlertCircle, Info, LayoutGrid, List, Download, Menu, X } from 'lucide-react';
 import Sidebar from './components/Sidebar';
 import IndicatorCard from './components/IndicatorCard';
 import DetailsPanel from './components/DetailsPanel';
@@ -16,6 +16,7 @@ export default function App() {
   const [search, setSearch] = useState('');
   const [selectedIndicator, setSelectedIndicator] = useState<Indicator | null>(null);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const filteredIndicators = useMemo(() => {
     return indicators.filter(i => {
@@ -51,108 +52,101 @@ export default function App() {
   }
 
   return (
-    <div className="flex h-screen bg-[#161616] text-zinc-100 font-sans overflow-hidden">
+    <div className="flex h-screen bg-[#161616] text-zinc-100 font-sans overflow-hidden relative">
       <Sidebar 
         sections={sections} 
         activeSection={activeSection} 
-        onSelectSection={setActiveSection}
+        onSelectSection={(section) => {
+          setActiveSection(section);
+          setIsSidebarOpen(false);
+        }}
         indicators={indicators}
+        isOpen={isSidebarOpen}
+        onClose={() => setIsSidebarOpen(false)}
       />
 
-      <main className="flex-1 overflow-y-auto relative flex flex-col">
+      <main className="flex-1 overflow-y-auto relative flex flex-col w-full">
         {/* Sticky Header */}
-        <header className="sticky top-0 z-30 bg-[#0a0a0a]/80 backdrop-blur-xl border-b border-zinc-800/50 px-8 py-5">
+        <header className="sticky top-0 z-30 bg-[#0a0a0a]/80 backdrop-blur-xl border-b border-zinc-800/50 px-4 md:px-8 py-4 md:py-5">
           <div className="flex items-center justify-between gap-4 max-w-7xl mx-auto w-full">
-            <div className="flex flex-col">
-              <div className="flex items-center gap-2">
-                <h2 className="text-2xl font-bold tracking-tight text-white uppercase">
-                  {activeSection || 'INDICADORES DE QUALIDADE DO 32º BPM/I - v1.0'}
-                </h2>
-                {activeSection && (
-                  <span className="px-2 py-0.5 bg-blue-500/10 text-blue-400 rounded-md text-[10px] font-bold border border-blue-500/20">
-                    SETOR ATIVO
-                  </span>
-                )}
-              </div>
-              <div className="flex items-center gap-2 mt-1.5">
-                <span className="flex items-center gap-1.5 text-[10px] font-bold text-zinc-500 tracking-wider">
-                  ÚLTIMA SINCRONIZAÇÃO: {lastUpdated}
-                </span>
-                <div className="w-1 h-1 rounded-full bg-zinc-800" />
-                <div className="flex items-center gap-1.5">
-                  <motion.div 
-                    animate={{ opacity: [1, 0.4, 1] }}
-                    transition={{ duration: 2, repeat: Infinity }}
-                    className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.6)]" 
-                  />
-                  <span className="text-[10px] font-bold text-emerald-500 tracking-wider">
-                    SISTEMA ATIVO
+            <div className="flex items-center gap-4">
+              <button 
+                onClick={() => setIsSidebarOpen(true)}
+                className="lg:hidden p-2 bg-zinc-900 border border-zinc-800 rounded-xl text-white active:scale-95 transition-all"
+              >
+                <Menu className="w-5 h-5" />
+              </button>
+              <div className="flex flex-col">
+                <div className="flex items-center gap-2">
+                  <h2 className="text-lg md:text-2xl font-bold tracking-tight text-white uppercase truncate max-w-[200px] md:max-w-none">
+                    {activeSection || 'INDICADORES - v1.0'}
+                  </h2>
+                  {activeSection && (
+                    <span className="hidden md:inline-block px-2 py-0.5 bg-blue-500/10 text-blue-400 rounded-md text-[10px] font-bold border border-blue-500/20">
+                      SETOR ATIVO
+                    </span>
+                  )}
+                </div>
+                <div className="flex items-center gap-2 mt-0.5 md:mt-1.5">
+                  <span className="flex items-center gap-1.5 text-[8px] md:text-[10px] font-bold text-zinc-500 tracking-wider">
+                    ÚLTIMA SINCRONIZAÇÃO: {lastUpdated}
                   </span>
                 </div>
               </div>
             </div>
 
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 md:gap-4">
               {activeSection && (
-                <div className="relative group">
+                <div className="relative group hidden sm:block">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500 group-focus-within:text-blue-500 transition-colors" />
                   <input 
                     type="text" 
-                    placeholder="Pesquisar indicadores..." 
+                    placeholder="Pesquisar..." 
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
-                    className="pl-10 pr-4 py-2.5 bg-zinc-900 border-2 border-zinc-800 rounded-2xl text-sm text-white focus:border-blue-500/50 focus:ring-4 focus:ring-blue-500/5 w-72 transition-all outline-none font-medium"
+                    className="pl-10 pr-4 py-2 bg-zinc-900 border-2 border-zinc-800 rounded-2xl text-xs text-white focus:border-blue-500/50 focus:ring-4 focus:ring-blue-500/5 w-40 md:w-72 transition-all outline-none font-medium"
                   />
                 </div>
               )}
-              {activeSection && (
-                <div className="flex items-center gap-1 bg-zinc-900 p-1.5 rounded-2xl border border-zinc-800">
-                  <button 
-                    onClick={() => setViewMode('grid')}
-                    className={cn(
-                      "p-2 rounded-xl transition-all", 
-                      viewMode === 'grid' ? "bg-zinc-800 shadow-sm text-blue-400" : "text-zinc-500 hover:text-zinc-300"
-                    )}
-                    title="Visão em Grade"
-                  >
-                    <LayoutGrid className="w-4 h-4" />
-                  </button>
-                  <button 
-                    onClick={() => setViewMode('list')}
-                    className={cn(
-                      "p-2 rounded-xl transition-all", 
-                      viewMode === 'list' ? "bg-zinc-800 shadow-sm text-blue-400" : "text-zinc-500 hover:text-zinc-300"
-                    )}
-                    title="Visão em Lista"
-                  >
-                    <List className="w-4 h-4" />
-                  </button>
-                </div>
-              )}
-              <button 
-                onClick={refreshData}
-                disabled={loading}
-                className="p-2.5 bg-zinc-900 border border-zinc-800 rounded-2xl hover:bg-zinc-800 transition-colors disabled:opacity-50 shadow-sm"
-              >
-                <RefreshCcw className={cn("w-5 h-5 text-zinc-400", loading ? "animate-spin" : "")} />
-              </button>
-              <button 
-                onClick={() => generateIndicatorsPDF(filteredIndicators, activeSection || 'Geral')}
-                className="flex items-center gap-2 px-5 py-2.5 bg-blue-600 text-white rounded-2xl text-sm font-bold shadow-lg shadow-blue-900/20 hover:bg-blue-500 transition-all active:scale-95"
-              >
-                <Download className="w-4 h-4" />
-                Relatório
-              </button>
+              <div className="flex items-center gap-2">
+                <button 
+                  onClick={refreshData}
+                  disabled={loading}
+                  className="p-2 md:p-2.5 bg-zinc-900 border border-zinc-800 rounded-xl md:rounded-2xl hover:bg-zinc-800 transition-colors disabled:opacity-50 shadow-sm"
+                >
+                  <RefreshCcw className={cn("w-4 h-4 md:w-5 md:h-5 text-zinc-400", loading ? "animate-spin" : "")} />
+                </button>
+                <button 
+                  onClick={() => generateIndicatorsPDF(filteredIndicators, activeSection || 'Geral')}
+                  className="flex items-center gap-2 px-3 md:px-5 py-2 md:py-2.5 bg-blue-600 text-white rounded-xl md:rounded-2xl text-[10px] md:text-sm font-bold shadow-lg shadow-blue-900/20 hover:bg-blue-500 transition-all active:scale-95"
+                >
+                  <Download className="w-4 h-4" />
+                  <span className="hidden sm:inline">Relatório</span>
+                </button>
+              </div>
             </div>
           </div>
+          {/* Mobile Search */}
+          {activeSection && (
+            <div className="relative group mt-3 sm:hidden">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500 group-focus-within:text-blue-500 transition-colors" />
+              <input 
+                type="text" 
+                placeholder="Pesquisar indicadores..." 
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 bg-zinc-900 border-2 border-zinc-800 rounded-2xl text-xs text-white focus:border-blue-500/50 focus:ring-4 focus:ring-blue-500/5 transition-all outline-none font-medium"
+              />
+            </div>
+          )}
         </header>
 
         {/* Content */}
-        <div className="p-8 pb-16 flex-1">
-          <div className="max-w-7xl mx-auto space-y-10">
+        <div className="p-4 md:p-8 pb-16 flex-1">
+          <div className="max-w-7xl mx-auto space-y-6 md:space-y-10">
             {/* Quick Stats Banner (Only when section is active) */}
             {activeSection && (
-              <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              <section className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
                 {[
                   { label: 'Total na Seção', value: stats.total, color: 'blue', icon: LayoutGrid, desc: 'Indicadores no setor' },
                   { label: 'Meta Atingida', value: stats.sim, color: 'emerald', icon: RefreshCcw, desc: 'Nesta seção' },
@@ -176,7 +170,7 @@ export default function App() {
                       </div>
                       <div>
                         <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest leading-none mb-1">{s.label}</p>
-                        <p className="text-4xl font-mono font-bold tracking-tighter tabular-nums text-white">{s.value}</p>
+                    <p className="text-2xl md:text-4xl font-mono font-bold tracking-tighter tabular-nums text-white">{s.value}</p>
                       </div>
                       <p className="text-[10px] font-medium text-zinc-400 uppercase tracking-wide">{s.desc}</p>
                     </div>

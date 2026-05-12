@@ -8,9 +8,11 @@ interface SidebarProps {
   activeSection: string | null;
   onSelectSection: (section: string | null) => void;
   indicators: any[];
+  isOpen?: boolean;
+  onClose?: () => void;
 }
 
-export default function Sidebar({ sections, activeSection, onSelectSection, indicators }: SidebarProps) {
+export default function Sidebar({ sections, activeSection, onSelectSection, indicators, isOpen, onClose }: SidebarProps) {
   const [showMembers, setShowMembers] = useState(false);
 
   const getSectionStats = (section: string) => {
@@ -21,9 +23,9 @@ export default function Sidebar({ sections, activeSection, onSelectSection, indi
     return { total: sectionIndicators.length, sim, nao, igual };
   };
 
-  return (
-    <aside id="sidebar" className="w-80 h-screen bg-[#0a0a0a] text-white flex flex-col border-r border-white/5 overflow-hidden">
-      <div className="p-8 border-b border-white/5 bg-[#0d0d0d]">
+  const sidebarContent = (
+    <aside id="sidebar" className="w-80 h-full bg-[#0a0a0a] text-white flex flex-col border-r border-white/5 overflow-hidden">
+      <div className="p-6 md:p-8 border-b border-white/5 bg-[#0d0d0d]">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
             <div>
@@ -31,93 +33,27 @@ export default function Sidebar({ sections, activeSection, onSelectSection, indi
               <p className="text-[10px] text-blue-500 font-bold uppercase tracking-[0.2em] mt-1 text-glow">COMISSÃO DE QUALIDADE</p>
             </div>
           </div>
-          <button 
-            onClick={() => setShowMembers(true)}
-            className="w-10 h-10 rounded-full bg-zinc-900 border border-white/5 flex items-center justify-center text-zinc-500 hover:text-white hover:bg-blue-600 transition-all mr-2"
-            title="Membros da Comissão"
-          >
-            <Users className="w-5 h-5" />
-          </button>
+          <div className="flex items-center gap-2">
+            <button 
+              onClick={() => setShowMembers(true)}
+              className="w-10 h-10 rounded-full bg-zinc-900 border border-white/5 flex items-center justify-center text-zinc-500 hover:text-white hover:bg-blue-600 transition-all shadow-sm"
+              title="Membros da Comissão"
+            >
+              <Users className="w-5 h-5" />
+            </button>
+            {onClose && (
+              <button 
+                onClick={onClose}
+                className="lg:hidden w-10 h-10 rounded-full bg-zinc-900 border border-white/5 flex items-center justify-center text-zinc-500 hover:text-white transition-all shadow-sm"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            )}
+          </div>
         </div>
       </div>
 
-      <AnimatePresence>
-        {showMembers && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-6 sm:p-24 overflow-hidden">
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setShowMembers(false)}
-              className="absolute inset-0 bg-black/80 backdrop-blur-md"
-            />
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="relative w-full max-w-lg bg-zinc-950 border border-white/10 rounded-[2.5rem] shadow-2xl overflow-hidden"
-            >
-              <div className="p-8 border-b border-white/5 flex items-center justify-between bg-zinc-900/50">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/20">
-                    <Users className="w-6 h-6 text-white" />
-                  </div>
-                  <div>
-                    <h2 className="text-xl font-black tracking-tighter text-white uppercase leading-none">Comissão de Qualidade</h2>
-                    <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-[0.2em] mt-1">32º Batalhão de Polícia Militar do Interior</p>
-                  </div>
-                </div>
-                <button 
-                  onClick={() => setShowMembers(false)}
-                  className="w-10 h-10 rounded-full bg-zinc-800 flex items-center justify-center text-zinc-400 hover:text-white hover:bg-zinc-700 transition-all"
-                >
-                  <X className="w-5 h-5" />
-                </button>
-              </div>
-
-              <div className="p-8 space-y-6 max-h-[60vh] overflow-y-auto custom-scrollbar">
-                <div className="space-y-4">
-                  <h3 className="text-[10px] font-black text-blue-500 uppercase tracking-[0.3em] mb-4">Composição da Comissão</h3>
-                  <div className="grid gap-3">
-                    {[
-                      { name: "Ten Cel PM Marlus Guedes", role: "Presidente" },
-                      { name: "Maj PM Ronny Emerson Gomes", role: "Membro" },
-                      { name: "Maj PM Marcelo Shigeo Garcia Tsuda", role: "Membro" },
-                      { name: "Cap PM André Luis Coelho Piedade", role: "Membro" },
-                      { name: "Cap PM Pedro Nicolau de Carvalho", role: "Membro" },
-                      { name: "Cap PM Milton Lúcio de Carvalho Junior", role: "Membro" },
-                      { name: "Cap PM Alan Eduardo Domingues", role: "Membro" },
-                      { name: "Cap PM Tiago Siqueira Machado", role: "Membro" },
-                      { name: "1º Ten PM Willian de Souza Albertini", role: "Membro" },
-                      { name: "1º Ten PM Clélio Augusto Vieira", role: "Membro" },
-                      { name: "1º Ten PM Leandro Miranda de Souza", role: "Membro" },
-                      { name: "Subten PM Leonardo Móvio Santana", role: "Membro" },
-                      { name: "Subten PM Hugo Damião da Costa", role: "Membro" },
-                      { name: "Cb PM Alexandre Latuffe", role: "Membro" },
-                    ].map((member, i) => (
-                      <div key={i} className="flex items-center justify-between p-4 rounded-2xl bg-white/5 border border-white/5 hover:border-white/10 transition-colors">
-                        <span className="font-bold text-sm text-zinc-200">{member.name}</span>
-                        <span className="text-[9px] font-black uppercase tracking-widest text-zinc-500 bg-zinc-900 px-2 py-1 rounded-md">{member.role}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              <div className="p-8 bg-zinc-900/30 text-center border-t border-white/5">
-                <p className="text-[10px] text-zinc-600 font-medium uppercase tracking-widest leading-relaxed mb-2">
-                  Trabalhando para a excelência na prestação de serviço <br/> à sociedade através da Melhoria Contínua.
-                </p>
-                <p className="text-[9px] text-zinc-700 font-bold uppercase tracking-widest">
-                  Conforme Bol Int CPI8-030/25
-                </p>
-              </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
-
-      <nav className="flex-1 overflow-y-auto pt-6 pb-20 px-4 space-y-1 custom-scrollbar">
+      <nav className="flex-1 overflow-y-auto pt-6 pb-24 px-4 space-y-1 custom-scrollbar">
         <div className="px-4 mb-4">
           <p className="text-[10px] font-bold text-zinc-700 uppercase tracking-[0.3em]">Navegação Principal</p>
         </div>
@@ -194,5 +130,114 @@ export default function Sidebar({ sections, activeSection, onSelectSection, indi
         </div>
       </nav>
     </aside>
+  );
+
+  return (
+    <>
+      {/* Desktop Sidebar */}
+      <div className="hidden lg:block h-screen shrink-0 sticky top-0">
+        {sidebarContent}
+      </div>
+
+      {/* Mobile Sidebar */}
+      <AnimatePresence>
+        {isOpen && (
+          <div className="fixed inset-0 z-50 lg:hidden">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={onClose}
+              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            />
+            <motion.div
+              initial={{ x: '-100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '-100%' }}
+              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+              className="absolute left-0 top-0 bottom-0 shadow-2xl"
+            >
+              {sidebarContent}
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {showMembers && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-6 sm:p-24 overflow-hidden">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowMembers(false)}
+              className="absolute inset-0 bg-black/80 backdrop-blur-md"
+            />
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="relative w-full max-w-lg bg-zinc-950 border border-white/10 rounded-[2.5rem] shadow-2xl overflow-hidden"
+            >
+              <div className="p-8 border-b border-white/5 flex items-center justify-between bg-zinc-900/50">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/20">
+                    <Users className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <h2 className="text-xl font-black tracking-tighter text-white uppercase leading-none">Comissão de Qualidade</h2>
+                    <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-[0.2em] mt-1">32º Batalhão de Polícia Militar do Interior</p>
+                  </div>
+                </div>
+                <button 
+                  onClick={() => setShowMembers(false)}
+                  className="w-10 h-10 rounded-full bg-zinc-800 flex items-center justify-center text-zinc-400 hover:text-white hover:bg-zinc-700 transition-all font-bold"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              <div className="p-8 space-y-6 max-h-[60vh] overflow-y-auto custom-scrollbar">
+                <div className="space-y-4">
+                  <h3 className="text-[10px] font-black text-blue-500 uppercase tracking-[0.3em] mb-4">Composição da Comissão</h3>
+                  <div className="grid gap-3">
+                    {[
+                      { name: "Ten Cel PM Marlus Guedes", role: "Presidente" },
+                      { name: "Maj PM Ronny Emerson Gomes", role: "Membro" },
+                      { name: "Maj PM Marcelo Shigeo Garcia Tsuda", role: "Membro" },
+                      { name: "Cap PM André Luis Coelho Piedade", role: "Membro" },
+                      { name: "Cap PM Pedro Nicolau de Carvalho", role: "Membro" },
+                      { name: "Cap PM Milton Lúcio de Carvalho Junior", role: "Membro" },
+                      { name: "Cap PM Alan Eduardo Domingues", role: "Membro" },
+                      { name: "Cap PM Tiago Siqueira Machado", role: "Membro" },
+                      { name: "1º Ten PM Willian de Souza Albertini", role: "Membro" },
+                      { name: "1º Ten PM Clélio Augusto Vieira", role: "Membro" },
+                      { name: "1º Ten PM Leandro Miranda de Souza", role: "Membro" },
+                      { name: "Subten PM Leonardo Móvio Santana", role: "Membro" },
+                      { name: "Subten PM Hugo Damião da Costa", role: "Membro" },
+                      { name: "Cb PM Alexandre Latuffe", role: "Membro" },
+                    ].map((member, i) => (
+                      <div key={i} className="flex items-center justify-between p-4 rounded-2xl bg-white/5 border border-white/5 hover:border-white/10 transition-colors">
+                        <span className="font-bold text-sm text-zinc-200">{member.name}</span>
+                        <span className="text-[9px] font-black uppercase tracking-widest text-zinc-500 bg-zinc-900 px-2 py-1 rounded-md">{member.role}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-8 bg-zinc-900/30 text-center border-t border-white/5">
+                <p className="text-[10px] text-zinc-600 font-medium uppercase tracking-widest leading-relaxed mb-2">
+                  Trabalhando para a excelência na prestação de serviço <br/> à sociedade através da Melhoria Contínua.
+                </p>
+                <p className="text-[9px] text-zinc-700 font-bold uppercase tracking-widest">
+                  Conforme Bol Int CPI8-030/25
+                </p>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+    </>
   );
 }
