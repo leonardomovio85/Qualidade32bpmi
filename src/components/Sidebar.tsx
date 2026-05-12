@@ -81,19 +81,19 @@ export default function Sidebar({ sections, activeSection, onSelectSection, indi
                   <div className="grid gap-3">
                     {[
                       { name: "Ten Cel PM Marlus Guedes", role: "Presidente" },
-                      { name: "Maj PM 980921-0 Ronny Emerson Gomes", role: "Membro" },
-                      { name: "Maj PM 990071-3 Marcelo Shigeo Garcia Tsuda", role: "Membro" },
-                      { name: "Cap PM 108473-9 André Luis Coelho Piedade", role: "Membro" },
-                      { name: "Cap PM 121889-1 Pedro Nicolau de Carvalho", role: "Membro" },
-                      { name: "Cap PM 127700-6 Milton Lúcio de Carvalho Junior", role: "Membro" },
-                      { name: "Cap PM 121851-7 Alan Eduardo Domingues", role: "Membro" },
-                      { name: "Cap PM 125434-A Tiago Siqueira Machado", role: "Membro" },
-                      { name: "1º Ten PM 142464-5 Willian de Souza Albertini", role: "Membro" },
-                      { name: "1º Ten PM 100174-4 Clélio Augusto Vieira", role: "Membro" },
-                      { name: "1º Ten PM 116620-4 Leandro Miranda de Souza", role: "Membro" },
-                      { name: "Subten PM 123486-2 Leonardo Móvio Santana", role: "Membro" },
-                      { name: "Subten PM 107663-9 Hugo Damião da Costa", role: "Membro" },
-                      { name: "Cb PM 107713-9 Alexandre Latuffe", role: "Membro" },
+                      { name: "Maj PM Ronny Emerson Gomes", role: "Membro" },
+                      { name: "Maj PM Marcelo Shigeo Garcia Tsuda", role: "Membro" },
+                      { name: "Cap PM André Luis Coelho Piedade", role: "Membro" },
+                      { name: "Cap PM Pedro Nicolau de Carvalho", role: "Membro" },
+                      { name: "Cap PM Milton Lúcio de Carvalho Junior", role: "Membro" },
+                      { name: "Cap PM Alan Eduardo Domingues", role: "Membro" },
+                      { name: "Cap PM Tiago Siqueira Machado", role: "Membro" },
+                      { name: "1º Ten PM Willian de Souza Albertini", role: "Membro" },
+                      { name: "1º Ten PM Clélio Augusto Vieira", role: "Membro" },
+                      { name: "1º Ten PM Leandro Miranda de Souza", role: "Membro" },
+                      { name: "Subten PM Leonardo Móvio Santana", role: "Membro" },
+                      { name: "Subten PM Hugo Damião da Costa", role: "Membro" },
+                      { name: "Cb PM Alexandre Latuffe", role: "Membro" },
                     ].map((member, i) => (
                       <div key={i} className="flex items-center justify-between p-4 rounded-2xl bg-white/5 border border-white/5 hover:border-white/10 transition-colors">
                         <span className="font-bold text-sm text-zinc-200">{member.name}</span>
